@@ -85,7 +85,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "L'application la plus simple pour commencer la musculation. Programmes IA personnalisés en français, pensés pour l'Afrique de l'Ouest.",
       },
       { name: "theme-color", content: "#231f1c" },
-      { property: "og:title", content: "TagatYaram — La force du Sahel dans votre poche" },
+      { property: "og:title", content: "TagatYaram — Programmes de musculation IA en français" },
       {
         property: "og:description",
         content:
@@ -93,6 +93,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "TagatYaram — Programmes de musculation IA en français" },
+      { name: "description", content: "TagatYaram Connect is a TypeScript application for managing and connecting users." },
+      { property: "og:description", content: "TagatYaram Connect is a TypeScript application for managing and connecting users." },
+      { name: "twitter:description", content: "TagatYaram Connect is a TypeScript application for managing and connecting users." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/81d35e4d-7d33-417d-a581-b0f3139973fd/id-preview-d46c6784--f79086a6-8423-48e1-af41-cc4b4a6468ca.lovable.app-1782932423163.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/81d35e4d-7d33-417d-a581-b0f3139973fd/id-preview-d46c6784--f79086a6-8423-48e1-af41-cc4b4a6468ca.lovable.app-1782932423163.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
