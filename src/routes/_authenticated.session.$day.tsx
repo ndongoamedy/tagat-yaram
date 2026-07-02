@@ -47,16 +47,34 @@ function SessionPage() {
       const found = program.days.find((d) => d.day_number === dayNum);
       if (!found) return;
       setDayData(found);
+
+      // Fetch last completed session for this day to prefill weights
+      const { data: lastSessions } = await supabase
+        .from("sessions")
+        .select("session_data")
+        .eq("user_id", userData.user.id)
+        .eq("day_number", dayNum)
+        .eq("completed", true)
+        .order("completed_at", { ascending: false })
+        .limit(1);
+      const lastExercises: ExerciseLog[] =
+        (lastSessions?.[0]?.session_data as any)?.exercises ?? [];
+      const lastByName = new Map(lastExercises.map((e) => [e.exercise_name, e]));
+
       setLogs(
         found.exercises.map((ex) => {
           const target = parseTargetReps(ex.reps);
+          const prev = lastByName.get(ex.name);
           return {
             exercise_name: ex.name,
-            sets: Array.from({ length: ex.sets }, () => ({
-              weight_kg: 0,
-              reps: target,
-              completed: false,
-            })),
+            sets: Array.from({ length: ex.sets }, (_, i) => {
+              const prevSet = prev?.sets[i] ?? prev?.sets[prev.sets.length - 1];
+              return {
+                weight_kg: prevSet?.weight_kg ?? suggestWeight(ex.name),
+                reps: prevSet?.reps ?? target,
+                completed: false,
+              };
+            }),
           };
         }),
       );
