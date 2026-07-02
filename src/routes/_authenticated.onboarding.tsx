@@ -314,3 +314,89 @@ function Choices({
     </div>
   );
 }
+
+type Morpho = "ectomorphe" | "mesomorphe" | "endomorphe" | "inconnu";
+
+function MorphoChoice({
+  value,
+  onChange,
+}: {
+  value: Morpho;
+  onChange: (v: Morpho) => void;
+}) {
+  const opts: { v: Morpho; l: string; d: string; svg: React.ReactNode }[] = [
+    {
+      v: "ectomorphe",
+      l: "Ectomorphe",
+      d: "Fin, du mal à prendre",
+      svg: <Silhouette variant="thin" />,
+    },
+    {
+      v: "mesomorphe",
+      l: "Mésomorphe",
+      d: "Athlétique naturel",
+      svg: <Silhouette variant="athletic" />,
+    },
+    {
+      v: "endomorphe",
+      l: "Endomorphe",
+      d: "Prend facilement",
+      svg: <Silhouette variant="thick" />,
+    },
+  ];
+  return (
+    <div>
+      <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        Morphotype
+      </span>
+      <div className="mt-2 grid grid-cols-3 gap-2">
+        {opts.map((o) => {
+          const active = value === o.v;
+          return (
+            <button
+              key={o.v}
+              type="button"
+              onClick={() => onChange(o.v)}
+              className={`flex flex-col items-center gap-2 rounded-xl border p-3 text-center text-xs transition ${
+                active
+                  ? "border-brand bg-brand-muted text-foreground"
+                  : "border-border bg-surface-2 text-muted-foreground hover:border-brand/40"
+              }`}
+            >
+              <div className={active ? "text-brand" : "text-muted-foreground"}>{o.svg}</div>
+              <div className="font-semibold text-foreground">{o.l}</div>
+              <div className="text-[10px] text-muted-foreground">{o.d}</div>
+            </button>
+          );
+        })}
+      </div>
+      <button
+        type="button"
+        onClick={() => onChange("inconnu")}
+        className={`mt-2 w-full rounded-xl border p-2 text-xs transition ${
+          value === "inconnu"
+            ? "border-brand bg-brand-muted text-foreground"
+            : "border-border bg-surface-2 text-muted-foreground hover:border-brand/40"
+        }`}
+      >
+        Je ne sais pas
+      </button>
+    </div>
+  );
+}
+
+function Silhouette({ variant }: { variant: "thin" | "athletic" | "thick" }) {
+  // Simple stylized SVG silhouettes
+  const paths = {
+    thin: "M32 8c3 0 5 2 5 5s-2 5-5 5-5-2-5-5 2-5 5-5zm-3 14h6l3 8-2 22h-2l-1-18h-2l-1 18h-2l-2-22 3-8z",
+    athletic:
+      "M32 6c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6 2.7-6 6-6zm-8 15h16l4 10-3 6-3-2-1 20h-3l-1-16h-2l-1 16h-3l-1-20-3 2-3-6 4-10z",
+    thick:
+      "M32 6c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6 2.7-6 6-6zm-11 15h22l4 12-4 6-3-2v6l-2 15h-3l-1-15h-4l-1 15h-3l-2-15v-6l-3 2-4-6 4-12z",
+  };
+  return (
+    <svg viewBox="0 0 64 64" className="size-14" fill="currentColor" aria-hidden>
+      <path d={paths[variant]} />
+    </svg>
+  );
+}
