@@ -71,9 +71,58 @@ function Dashboard() {
   const today = new Date().getDay(); // 0 Sun - 6 Sat
   const todayIdx = today === 0 ? 6 : today - 1; // Lundi = 0
 
-  // Distribute training days across the week with rest days in between.
-  // schedule[weekdayIdx] = day_number | null (rest)
-  const schedule = distributeWeek(program.days.length);
+  const storageKey = programId ? `tagat.schedule.${programId}` : null;
+  const defaultSchedule = useMemo(
+    () => defaultDistribute(program.days.length),
+    [program.days.length],
+  );
+  const [schedule, setSchedule] = useState<(number | null)[]>(defaultSchedule);
+  const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    if (!storageKey) return;
+    const raw = localStorage.getItem(storageKey);
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length === 7) {
+          setSchedule(parsed);
+          return;
+        }
+      } catch {}
+    }
+    setSchedule(defaultSchedule);
+  }, [storageKey, defaultSchedule]);
+
+  function persist(next: (number | null)[]) {
+    setSchedule(next);
+    if (storageKey) localStorage.setItem(storageKey, JSON.stringify(next));
+  }
+
+  // Cycle a weekday slot through: rest -> next unused day -> ... -> rest
+  function cycleSlot(idx: number) {
+    const total = program!.days.length;
+    const current = schedule[idx];
+    const inUse = new Set(schedule.filter((v): v is number => v !== null));
+    if (current !== null) inUse.delete(current);
+    // Find next day number not currently in use, starting after `current`.
+    const start = current === null ? 1 : current + 1;
+    let picked: number | null = null;
+    for (let d = start; d <= total; d++) {
+      if (!inUse.has(d)) {
+        picked = d;
+        break;
+      }
+    }
+    const next = [...schedule];
+    next[idx] = picked;
+    persist(next);
+  }
+
+  function resetSchedule() {
+    if (storageKey) localStorage.removeItem(storageKey);
+    setSchedule(defaultSchedule);
+  }
 
   return (
     <div className="mx-auto max-w-5xl space-y-8 px-4 py-8">
@@ -86,11 +135,36 @@ function Dashboard() {
 
       {/* Week strip */}
       <div className="rounded-2xl border border-border bg-surface p-4 md:p-6">
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex items-center justify-between gap-2">
           <h2 className="text-lg font-semibold">Cette semaine</h2>
-          <span className="text-xs text-muted-foreground">
-            {completedDays.size} / {program.days.length} séance{program.days.length > 1 ? "s" : ""}
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-muted-foreground">
+              {completedDays.size} / {program.days.length}
+            </span>
+            {editing ? (
+              <>
+                <button
+                  onClick={resetSchedule}
+                  className="text-[11px] text-muted-foreground underline underline-offset-2 hover:text-foreground"
+                >
+                  Réinit.
+                </button>
+                <button
+                  onClick={() => setEditing(false)}
+                  className="inline-flex items-center gap-1 rounded-full bg-brand px-3 py-1 text-[11px] font-semibold text-brand-foreground"
+                >
+                  <Check className="size-3" /> OK
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setEditing(true)}
+                className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-[11px] font-semibold hover:bg-surface-2"
+              >
+                <Pencil className="size-3" /> Modifier
+              </button>
+            )}
+          </div>
         </div>
         <div className="grid grid-cols-7 gap-2">
           {DAYS_FR.map((d, i) => {
@@ -98,6 +172,22 @@ function Dashboard() {
             const dayNum = schedule[i];
             const isTrain = dayNum !== null;
             const done = isTrain && completedDays.has(dayNum);
+            const inner = (
+              <div
+                className={`grid size-10 place-items-center rounded-full text-xs font-bold transition ${
+                  done
+                    ? "bg-brand text-brand-foreground"
+                    : isToday && isTrain
+                      ? "ring-2 ring-brand text-foreground"
+                      : isTrain
+                        ? "bg-surface-2 text-foreground"
+                        : "bg-surface-2 text-muted-foreground opacity-40"
+                } ${editing ? "cursor-pointer ring-1 ring-brand/40 hover:ring-brand" : ""}`}
+                title={isTrain ? `Jour ${dayNum}` : "Repos"}
+              >
+                {done ? <CheckCircle2 className="size-5" /> : isTrain ? dayNum : "·"}
+              </div>
+            );
             return (
               <div key={d} className="flex flex-col items-center gap-2">
                 <span
@@ -107,32 +197,21 @@ function Dashboard() {
                 >
                   {d}
                 </span>
-                <div
-                  className={`grid size-10 place-items-center rounded-full text-xs font-bold transition ${
-                    done
-                      ? "bg-brand text-brand-foreground"
-                      : isToday && isTrain
-                        ? "ring-2 ring-brand text-foreground"
-                        : isTrain
-                          ? "bg-surface-2 text-foreground"
-                          : "bg-surface-2 text-muted-foreground opacity-40"
-                  }`}
-                  title={isTrain ? `Jour ${dayNum}` : "Repos"}
-                >
-                  {done ? (
-                    <CheckCircle2 className="size-5" />
-                  ) : isTrain ? (
-                    dayNum
-                  ) : (
-                    "·"
-                  )}
-                </div>
+                {editing ? (
+                  <button type="button" onClick={() => cycleSlot(i)}>
+                    {inner}
+                  </button>
+                ) : (
+                  inner
+                )}
               </div>
             );
           })}
         </div>
         <p className="mt-3 text-center text-[11px] text-muted-foreground">
-          Points = jours de repos
+          {editing
+            ? "Touche un jour pour changer (repos → J1 → J2 → …)"
+            : "Points = jours de repos"}
         </p>
       </div>
 
@@ -154,24 +233,22 @@ function Dashboard() {
   );
 }
 
-// Distribute N training days across 7 weekdays with rest days spaced evenly.
-// Returns an array of length 7 where each slot is either a day_number (1..N) or null.
-function distributeWeek(n: number): (number | null)[] {
+// Default weekly distribution: enchaîne les jours et pousse le repos vers le week-end.
+// 1 → Lun ; 2 → Lun, Jeu ; 3 → Lun, Mer, Ven ; 4 → Lun, Mar, Jeu, Ven ;
+// 5 → Lun–Ven ; 6 → Lun–Sam.
+function defaultDistribute(n: number): (number | null)[] {
   const week: (number | null)[] = Array(7).fill(null);
-  if (n <= 0) return week;
-  if (n >= 7) {
-    for (let i = 0; i < 7; i++) week[i] = i + 1;
-    return week;
-  }
-  // Choose n slots evenly spaced starting from Monday.
-  const step = 7 / n;
-  const used = new Set<number>();
-  for (let i = 0; i < n; i++) {
-    let idx = Math.round(i * step);
-    while (used.has(idx)) idx = (idx + 1) % 7;
-    used.add(idx);
-    week[idx] = i + 1;
-  }
+  const presets: Record<number, number[]> = {
+    1: [0],
+    2: [0, 3],
+    3: [0, 2, 4],
+    4: [0, 1, 3, 4],
+    5: [0, 1, 2, 3, 4],
+    6: [0, 1, 2, 3, 4, 5],
+    7: [0, 1, 2, 3, 4, 5, 6],
+  };
+  const slots = presets[Math.max(1, Math.min(7, n))];
+  slots.forEach((idx, i) => (week[idx] = i + 1));
   return week;
 }
 
