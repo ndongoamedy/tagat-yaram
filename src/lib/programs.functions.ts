@@ -138,6 +138,27 @@ Génère le programme de musculation en JSON.`;
 
     if (!program?.days?.length) throw new Error("Programme vide");
 
+    // Enrich every exercise with library data (youtube_id, muscles, alternative)
+    // and filter out any hallucinated names.
+    program.days = program.days.map((day) => ({
+      ...day,
+      exercises: day.exercises
+        .map((ex) => {
+          const lib = EXERCISE_BY_NAME[ex.name];
+          if (!lib) return null;
+          return {
+            name: lib.name,
+            muscles: lib.muscles,
+            sets: ex.sets,
+            reps: ex.reps,
+            description: ex.description,
+            alternative: lib.alternative,
+            youtube_id: lib.youtube_id,
+          };
+        })
+        .filter((e): e is NonNullable<typeof e> => e !== null),
+    }));
+
     // Deactivate old programs
     await supabase.from("programs").update({ is_active: false }).eq("user_id", userId);
 
