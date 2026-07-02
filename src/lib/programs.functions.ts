@@ -47,11 +47,18 @@ export const generateProgram = createServerFn({ method: "POST" })
       .eq("id", userId);
     if (pErr) throw new Error(`Profil : ${pErr.message}`);
 
-    // Build prompt
+    // Build prompt with the allowed exercise list
+    const allowedList = EXERCISES_LIBRARY.map(
+      (e) => `- "${e.name}" [${e.category}] muscles: ${e.muscles.join(", ")}`,
+    ).join("\n");
+
     const systemPrompt = `Tu es un coach de musculation francophone spécialisé pour les débutants d'Afrique de l'Ouest. Génère un programme de musculation en français, adapté au profil de l'utilisateur.
 
 RÈGLES STRICTES :
 - Réponds UNIQUEMENT en JSON valide, aucun texte autour, aucun markdown, aucun \`\`\`.
+- Utilise UNIQUEMENT les exercices de la liste autorisée ci-dessous. N'invente JAMAIS un nom d'exercice.
+- N'inclus PAS de champ youtube_id : il sera ajouté automatiquement.
+- Copie le nom d'exercice EXACTEMENT comme dans la liste (accents, majuscules, tirets).
 - Utilise EXACTEMENT ce schéma :
 {
   "days": [
@@ -61,23 +68,21 @@ RÈGLES STRICTES :
       "tag": "push",
       "exercises": [
         {
-          "name": "Développé couché",
-          "muscles": ["pectoraux", "triceps"],
+          "name": "Développé couché à la barre",
           "sets": 4,
           "reps": "8-10",
-          "description": "Court description 2 lignes max.",
-          "alternative": "Pompes",
-          "youtube_id": "rT7DgCr-3pg"
+          "description": "Description courte, 2 lignes max, conseils débutant."
         }
       ]
     }
   ]
 }
-- Noms d'exercices en français.
 - 4 à 6 exercices par jour.
-- Utilise des vrais youtube_id d'exercices connus (11 caractères).
 - Adapte structure : half body si 2-3 jours/semaine, split PPL si 4-6 jours.
-- Tag valides : "push", "pull", "legs", "upper", "lower", "full_body".`;
+- Tag valides : "push", "pull", "legs", "upper", "lower", "full_body".
+
+LISTE AUTORISÉE :
+${allowedList}`;
 
     const userPrompt = `Profil :
 - Prénom : ${data.first_name}
