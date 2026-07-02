@@ -1,13 +1,14 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { EXERCISES_LIBRARY, EXERCISE_BY_NAME } from "@/lib/exercises-library";
 
 const profileSchema = z.object({
   first_name: z.string().min(1).max(50),
   age: z.number().int().min(12).max(90),
   height_cm: z.number().int().min(120).max(230),
   weight_kg: z.number().min(30).max(250),
-  sex: z.enum(["homme", "femme", "autre"]),
+  sex: z.enum(["homme", "femme"]),
   morphotype: z.enum(["ectomorphe", "mesomorphe", "endomorphe", "inconnu"]),
   goal: z.enum(["prise_de_masse", "perte_de_poids", "entretien", "force"]),
   training_days_per_week: z.number().int().min(1).max(6),
