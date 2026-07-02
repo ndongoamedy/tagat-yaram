@@ -1,8 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { ProgramData, ProgramDay } from "@/lib/programs.functions";
-import { Loader2, Play, CheckCircle2, Dumbbell, Sparkles } from "lucide-react";
+import { Loader2, Play, CheckCircle2, Dumbbell, Pencil, Check } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
