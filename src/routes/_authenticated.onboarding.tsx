@@ -137,7 +137,6 @@ export default function OnboardingPage() {
               options={[
                 { v: "homme", l: "Homme" },
                 { v: "femme", l: "Femme" },
-                { v: "autre", l: "Autre" },
               ]}
             />
           </div>
@@ -162,16 +161,9 @@ export default function OnboardingPage() {
                 className="input"
               />
             </Field>
-            <Choices
-              label="Morphotype"
+            <MorphoChoice
               value={form.morphotype}
-              onChange={(v) => setForm({ ...form, morphotype: v as Form["morphotype"] })}
-              options={[
-                { v: "ectomorphe", l: "Ectomorphe", d: "Fin, du mal à prendre" },
-                { v: "mesomorphe", l: "Mésomorphe", d: "Athlétique naturel" },
-                { v: "endomorphe", l: "Endomorphe", d: "Prend facilement" },
-                { v: "inconnu", l: "Je ne sais pas" },
-              ]}
+              onChange={(v) => setForm({ ...form, morphotype: v })}
             />
           </div>
         )}
