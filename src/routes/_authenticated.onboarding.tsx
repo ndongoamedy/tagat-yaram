@@ -15,7 +15,7 @@ type Form = {
   age: number;
   height_cm: number;
   weight_kg: number;
-  sex: "homme" | "femme" | "autre";
+  sex: "homme" | "femme";
   morphotype: "ectomorphe" | "mesomorphe" | "endomorphe" | "inconnu";
   goal: "prise_de_masse" | "perte_de_poids" | "entretien" | "force";
   training_days_per_week: number;
