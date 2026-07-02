@@ -66,9 +66,13 @@ function AuthLayout() {
             <span className="hidden text-sm text-muted-foreground md:inline">
               {firstName && `Salut, ${firstName}`}
             </span>
-            <div className="grid size-9 place-items-center rounded-full bg-brand-muted text-sm font-semibold text-brand ring-1 ring-brand/30">
+            <Link
+              to="/profile"
+              aria-label="Mon profil"
+              className="grid size-9 place-items-center rounded-full bg-brand-muted text-sm font-semibold text-brand ring-1 ring-brand/30 transition hover:brightness-110"
+            >
               {(firstName[0] ?? "T").toUpperCase()}
-            </div>
+            </Link>
           </div>
         </div>
       </header>

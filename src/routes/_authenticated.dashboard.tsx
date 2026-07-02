@@ -71,6 +71,10 @@ function Dashboard() {
   const today = new Date().getDay(); // 0 Sun - 6 Sat
   const todayIdx = today === 0 ? 6 : today - 1; // Lundi = 0
 
+  // Distribute training days across the week with rest days in between.
+  // schedule[weekdayIdx] = day_number | null (rest)
+  const schedule = distributeWeek(program.days.length);
+
   return (
     <div className="mx-auto max-w-5xl space-y-8 px-4 py-8">
       <div>
@@ -91,8 +95,9 @@ function Dashboard() {
         <div className="grid grid-cols-7 gap-2">
           {DAYS_FR.map((d, i) => {
             const isToday = i === todayIdx;
-            const done = completedDays.has(i + 1);
-            const isTrain = i < program.days.length;
+            const dayNum = schedule[i];
+            const isTrain = dayNum !== null;
+            const done = isTrain && completedDays.has(dayNum);
             return (
               <div key={d} className="flex flex-col items-center gap-2">
                 <span
@@ -106,34 +111,68 @@ function Dashboard() {
                   className={`grid size-10 place-items-center rounded-full text-xs font-bold transition ${
                     done
                       ? "bg-brand text-brand-foreground"
-                      : isToday
+                      : isToday && isTrain
                         ? "ring-2 ring-brand text-foreground"
                         : isTrain
                           ? "bg-surface-2 text-foreground"
                           : "bg-surface-2 text-muted-foreground opacity-40"
                   }`}
+                  title={isTrain ? `Jour ${dayNum}` : "Repos"}
                 >
-                  {done ? <CheckCircle2 className="size-5" /> : isTrain ? i + 1 : "·"}
+                  {done ? (
+                    <CheckCircle2 className="size-5" />
+                  ) : isTrain ? (
+                    dayNum
+                  ) : (
+                    "·"
+                  )}
                 </div>
               </div>
             );
           })}
         </div>
+        <p className="mt-3 text-center text-[11px] text-muted-foreground">
+          Points = jours de repos
+        </p>
       </div>
 
       {/* Days list */}
       <div className="space-y-4">
-        {program.days.map((day, idx) => (
-          <DayCard
-            key={day.day_number}
-            day={day}
-            done={completedDays.has(day.day_number)}
-            isToday={idx === todayIdx}
-          />
-        ))}
+        {program.days.map((day) => {
+          const weekdayIdx = schedule.indexOf(day.day_number);
+          return (
+            <DayCard
+              key={day.day_number}
+              day={day}
+              done={completedDays.has(day.day_number)}
+              isToday={weekdayIdx === todayIdx}
+            />
+          );
+        })}
       </div>
     </div>
   );
+}
+
+// Distribute N training days across 7 weekdays with rest days spaced evenly.
+// Returns an array of length 7 where each slot is either a day_number (1..N) or null.
+function distributeWeek(n: number): (number | null)[] {
+  const week: (number | null)[] = Array(7).fill(null);
+  if (n <= 0) return week;
+  if (n >= 7) {
+    for (let i = 0; i < 7; i++) week[i] = i + 1;
+    return week;
+  }
+  // Choose n slots evenly spaced starting from Monday.
+  const step = 7 / n;
+  const used = new Set<number>();
+  for (let i = 0; i < n; i++) {
+    let idx = Math.round(i * step);
+    while (used.has(idx)) idx = (idx + 1) % 7;
+    used.add(idx);
+    week[idx] = i + 1;
+  }
+  return week;
 }
 
 function DayCard({
