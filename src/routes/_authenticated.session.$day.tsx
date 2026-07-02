@@ -20,6 +20,17 @@ function parseTargetReps(reps: string): number {
   return Math.round((nums[0] + nums[1]) / 2);
 }
 
+// Default starting weight (kg) for beginners based on the exercise name.
+function suggestWeight(name: string): number {
+  const n = name.toLowerCase();
+  if (/(pompes|traction|dips|gainage|planche|mollets sur|au poids)/.test(n)) return 0;
+  if (/(squat barre|soulevé|développé couché|rowing barre)/.test(n)) return 20;
+  if (/(presse|tirage|leg curl|leg extension)/.test(n)) return 25;
+  if (/(développé militaire|développé incliné|rowing haltère|fentes)/.test(n)) return 10;
+  if (/(curl|élévation|face pull|extension triceps|mollets)/.test(n)) return 6;
+  return 8;
+}
+
 function SessionPage() {
   const { day } = Route.useParams();
   const dayNum = Number(day);
