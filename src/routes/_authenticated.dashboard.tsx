@@ -17,6 +17,16 @@ function Dashboard() {
   const [completedDays, setCompletedDays] = useState<Set<number>>(new Set());
   const [firstName, setFirstName] = useState("");
   const navigate = useNavigate();
+  const programDayCount = program?.days.length ?? 0;
+  const today = new Date().getDay(); // 0 Sun - 6 Sat
+  const todayIdx = today === 0 ? 6 : today - 1; // Lundi = 0
+  const storageKey = programId ? `tagat.schedule.${programId}` : null;
+  const defaultSchedule = useMemo(
+    () => defaultDistribute(programDayCount),
+    [programDayCount],
+  );
+  const [schedule, setSchedule] = useState<(number | null)[]>(() => defaultDistribute(0));
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -58,27 +68,6 @@ function Dashboard() {
     })();
   }, [navigate]);
 
-  if (loading) {
-    return (
-      <div className="grid min-h-[70vh] place-items-center">
-        <Loader2 className="size-6 animate-spin text-brand" />
-      </div>
-    );
-  }
-
-  if (!program) return null;
-
-  const today = new Date().getDay(); // 0 Sun - 6 Sat
-  const todayIdx = today === 0 ? 6 : today - 1; // Lundi = 0
-
-  const storageKey = programId ? `tagat.schedule.${programId}` : null;
-  const defaultSchedule = useMemo(
-    () => defaultDistribute(program.days.length),
-    [program.days.length],
-  );
-  const [schedule, setSchedule] = useState<(number | null)[]>(defaultSchedule);
-  const [editing, setEditing] = useState(false);
-
   useEffect(() => {
     if (!storageKey) return;
     const raw = localStorage.getItem(storageKey);
@@ -93,6 +82,16 @@ function Dashboard() {
     }
     setSchedule(defaultSchedule);
   }, [storageKey, defaultSchedule]);
+
+  if (loading) {
+    return (
+      <div className="grid min-h-[70vh] place-items-center">
+        <Loader2 className="size-6 animate-spin text-brand" />
+      </div>
+    );
+  }
+
+  if (!program) return null;
 
   function persist(next: (number | null)[]) {
     setSchedule(next);
@@ -238,6 +237,7 @@ function Dashboard() {
 // 5 → Lun–Ven ; 6 → Lun–Sam.
 function defaultDistribute(n: number): (number | null)[] {
   const week: (number | null)[] = Array(7).fill(null);
+  if (n <= 0) return week;
   const presets: Record<number, number[]> = {
     1: [0],
     2: [0, 3],
