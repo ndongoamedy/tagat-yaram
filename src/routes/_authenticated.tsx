@@ -14,22 +14,29 @@ function AuthLayout() {
 
   useEffect(() => {
     let mounted = true;
-    supabase.auth.getSession().then(({ data }) => {
-      if (!mounted) return;
-      if (!data.session) {
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        if (!mounted) return;
+        if (!data.session) {
+          navigate({ to: "/auth" });
+          return;
+        }
+        setReady(true);
+        supabase
+          .from("profiles")
+          .select("first_name")
+          .eq("id", data.session.user.id)
+          .maybeSingle()
+          .then(({ data: p }) => {
+            if (mounted && p?.first_name) setFirstName(p.first_name);
+          })
+          .catch(() => {});
+      })
+      .catch(() => {
+        if (!mounted) return;
         navigate({ to: "/auth" });
-        return;
-      }
-      setReady(true);
-      supabase
-        .from("profiles")
-        .select("first_name")
-        .eq("id", data.session.user.id)
-        .maybeSingle()
-        .then(({ data: p }) => {
-          if (p?.first_name) setFirstName(p.first_name);
-        });
-    });
+      });
     const { data: sub } = supabase.auth.onAuthStateChange((_ev, session) => {
       if (!session) navigate({ to: "/auth" });
     });
