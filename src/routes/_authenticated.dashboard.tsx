@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { ProgramData, ProgramDay } from "@/lib/programs.functions";
 import { Loader2, Play, CheckCircle2, Dumbbell, Pencil, Check } from "lucide-react";
@@ -11,27 +11,72 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 const DAYS_FR = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
 function Dashboard() {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(true);
   const [program, setProgram] = useState<ProgramData | null>(null);
   const [programId, setProgramId] = useState<string | null>(null);
   const [completedDays, setCompletedDays] = useState<Set<number>>(new Set());
   const [firstName, setFirstName] = useState("");
-  const navigate = useNavigate();
+  const [schedule, setSchedule] = useState<(number | null)[]>(() => defaultDistribute(0));
+  const [editing, setEditing] = useState(false);
+
   const programDayCount = program?.days.length ?? 0;
   const today = new Date().getDay(); // 0 Sun - 6 Sat
   const todayIdx = today === 0 ? 6 : today - 1; // Lundi = 0
   const storageKey = programId ? `tagat.schedule.${programId}` : null;
+
   const defaultSchedule = useMemo(
     () => defaultDistribute(programDayCount),
     [programDayCount],
   );
-  const [schedule, setSchedule] = useState<(number | null)[]>(() => defaultDistribute(0));
-  const [editing, setEditing] = useState(false);
+
+  const persist = useCallback(
+    (next: (number | null)[]) => {
+      setSchedule(next);
+      if (storageKey) localStorage.setItem(storageKey, JSON.stringify(next));
+    },
+    [storageKey],
+  );
+
+  const cycleSlot = useCallback(
+    (idx: number) => {
+      if (!program) return;
+      const total = program.days.length;
+      setSchedule((prev) => {
+        const current = prev[idx];
+        const inUse = new Set(prev.filter((v): v is number => v !== null));
+        if (current !== null) inUse.delete(current);
+        const start = current === null ? 1 : current + 1;
+        let picked: number | null = null;
+        for (let d = start; d <= total; d++) {
+          if (!inUse.has(d)) {
+            picked = d;
+            break;
+          }
+        }
+        const next = [...prev];
+        next[idx] = picked;
+        if (storageKey) localStorage.setItem(storageKey, JSON.stringify(next));
+        return next;
+      });
+    },
+    [program, storageKey],
+  );
+
+  const resetSchedule = useCallback(() => {
+    if (storageKey) localStorage.removeItem(storageKey);
+    setSchedule(defaultSchedule);
+  }, [storageKey, defaultSchedule]);
 
   useEffect(() => {
+    let active = true;
     (async () => {
       const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return;
+      if (!userData.user) {
+        if (active) setLoading(false);
+        return;
+      }
 
       const [{ data: profile }, { data: prog }, { data: sessions }] = await Promise.all([
         supabase
@@ -54,6 +99,8 @@ function Dashboard() {
           .gte("started_at", new Date(Date.now() - 7 * 864e5).toISOString()),
       ]);
 
+      if (!active) return;
+
       if (profile?.first_name) setFirstName(profile.first_name);
 
       if (!profile?.onboarded || !prog) {
@@ -66,6 +113,10 @@ function Dashboard() {
       setCompletedDays(new Set((sessions ?? []).map((s) => s.day_number)));
       setLoading(false);
     })();
+
+    return () => {
+      active = false;
+    };
   }, [navigate]);
 
   useEffect(() => {
@@ -92,36 +143,6 @@ function Dashboard() {
   }
 
   if (!program) return null;
-
-  function persist(next: (number | null)[]) {
-    setSchedule(next);
-    if (storageKey) localStorage.setItem(storageKey, JSON.stringify(next));
-  }
-
-  // Cycle a weekday slot through: rest -> next unused day -> ... -> rest
-  function cycleSlot(idx: number) {
-    const total = program!.days.length;
-    const current = schedule[idx];
-    const inUse = new Set(schedule.filter((v): v is number => v !== null));
-    if (current !== null) inUse.delete(current);
-    // Find next day number not currently in use, starting after `current`.
-    const start = current === null ? 1 : current + 1;
-    let picked: number | null = null;
-    for (let d = start; d <= total; d++) {
-      if (!inUse.has(d)) {
-        picked = d;
-        break;
-      }
-    }
-    const next = [...schedule];
-    next[idx] = picked;
-    persist(next);
-  }
-
-  function resetSchedule() {
-    if (storageKey) localStorage.removeItem(storageKey);
-    setSchedule(defaultSchedule);
-  }
 
   return (
     <div className="mx-auto max-w-5xl space-y-8 px-4 py-8">
