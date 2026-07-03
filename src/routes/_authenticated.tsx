@@ -23,15 +23,18 @@ function AuthLayout() {
           return;
         }
         setReady(true);
-        supabase
-          .from("profiles")
-          .select("first_name")
-          .eq("id", data.session.user.id)
-          .maybeSingle()
-          .then(({ data: p }) => {
+        void (async () => {
+          try {
+            const { data: p } = await supabase
+              .from("profiles")
+              .select("first_name")
+              .eq("id", data.session.user.id)
+              .maybeSingle();
             if (mounted && p?.first_name) setFirstName(p.first_name);
-          })
-          .catch(() => {});
+          } catch {
+            // The profile greeting is optional; keep the app usable if it fails.
+          }
+        })();
       })
       .catch(() => {
         if (!mounted) return;
