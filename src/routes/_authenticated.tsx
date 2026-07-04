@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Dumbbell, Home, History, User, LogOut, Loader2 } from "lucide-react";
+import { Dumbbell, Home, History, User, LogOut, Loader2, HelpCircle } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthLayout,
@@ -70,6 +70,7 @@ function AuthLayout() {
           <nav className="hidden items-center gap-1 md:flex">
             <NavItem to="/dashboard" icon={<Home className="size-4" />} label="Programme" />
             <NavItem to="/history" icon={<History className="size-4" />} label="Historique" />
+            <NavItem to="/faq" icon={<HelpCircle className="size-4" />} label="Aide" />
             <NavItem to="/profile" icon={<User className="size-4" />} label="Profil" />
           </nav>
           <div className="flex items-center gap-3">
@@ -96,6 +97,7 @@ function AuthLayout() {
         <div className="mx-auto flex max-w-5xl items-center justify-around px-4 py-2">
           <MobileNavItem to="/dashboard" icon={<Home className="size-5" />} label="Séances" />
           <MobileNavItem to="/history" icon={<History className="size-5" />} label="Historique" />
+          <MobileNavItem to="/faq" icon={<HelpCircle className="size-5" />} label="Aide" />
           <MobileNavItem to="/profile" icon={<User className="size-5" />} label="Profil" />
           <button
             onClick={async () => {
