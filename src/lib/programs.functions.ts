@@ -77,7 +77,8 @@ RÈGLES STRICTES :
     }
   ]
 }
-- 4 à 6 exercices par jour.
+- 6 à 8 exercices par jour selon le groupe musculaire : jours jambes/dos peuvent monter à 8, jours bras isolés 6. Ne dépasse JAMAIS 8.
+- Charges et répétitions modérées adaptées débutants (8-12 reps le plus souvent, 10-15 pour isolation).
 - Adapte structure : half body si 2-3 jours/semaine, split PPL si 4-6 jours.
 - Tag valides : "push", "pull", "legs", "upper", "lower", "full_body".
 
