@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { ProgramData, ProgramDay } from "@/lib/programs.functions";
 import { MuscleMap } from "@/components/MuscleMap";
+import { ExerciseVideo } from "@/components/ExerciseVideo";
 import { toast } from "sonner";
 import {
   Loader2,
@@ -376,17 +377,7 @@ function SessionPage() {
 
       {/* Current exercise */}
       <div className="overflow-hidden rounded-2xl border border-border bg-surface">
-        {ex.youtube_id && (
-          <div className="aspect-video w-full bg-black">
-            <iframe
-              src={`https://www.youtube.com/embed/${ex.youtube_id}`}
-              title={ex.name}
-              className="h-full w-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        )}
+        {ex.youtube_id && <ExerciseVideo youtubeId={ex.youtube_id} title={ex.name} />}
         <div className="p-5">
           <div className="mb-2 flex items-baseline justify-between gap-2">
             <h2 className="text-xl font-bold">{ex.name}</h2>
