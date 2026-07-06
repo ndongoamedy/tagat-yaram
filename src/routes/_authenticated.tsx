@@ -97,7 +97,7 @@ function AuthLayout() {
         <div className="mx-auto flex max-w-5xl items-center justify-around px-4 py-2">
           <MobileNavItem to="/dashboard" icon={<Home className="size-5" />} label="Séances" />
           <MobileNavItem to="/history" icon={<History className="size-5" />} label="Historique" />
-          <MobileNavItem to="/faq" icon={<HelpCircle className="size-5" />} label="Aide" />
+          
           <MobileNavItem to="/profile" icon={<User className="size-5" />} label="Profil" />
           <button
             onClick={async () => {
