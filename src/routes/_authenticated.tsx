@@ -92,6 +92,8 @@ function AuthLayout() {
         <Outlet />
       </main>
 
+      <FloatingChat />
+
       {/* Mobile bottom nav */}
       <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-border/60 bg-canvas/95 backdrop-blur md:hidden">
         <div className="mx-auto flex max-w-5xl items-center justify-around px-4 py-2">
