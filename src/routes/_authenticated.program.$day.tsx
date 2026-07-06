@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { ProgramData, ProgramDay } from "@/lib/programs.functions";
 import { Loader2, ArrowLeft, Play, RefreshCcw } from "lucide-react";
 import { MuscleMap } from "@/components/MuscleMap";
+import { ExerciseVideo } from "@/components/ExerciseVideo";
 
 export const Route = createFileRoute("/_authenticated/program/$day")({
   component: ProgramDayPage,
@@ -83,17 +84,7 @@ function ProgramDayPage() {
       <div className="space-y-4">
         {dayData.exercises.map((ex, i) => (
           <div key={i} className="overflow-hidden rounded-2xl border border-border bg-surface">
-            {ex.youtube_id && (
-              <div className="aspect-video w-full bg-black">
-                <iframe
-                  src={`https://www.youtube.com/embed/${ex.youtube_id}`}
-                  title={ex.name}
-                  className="h-full w-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-            )}
+            {ex.youtube_id && <ExerciseVideo youtubeId={ex.youtube_id} title={ex.name} />}
             <div className="space-y-3 p-5">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h3 className="text-lg font-bold">{ex.name}</h3>
