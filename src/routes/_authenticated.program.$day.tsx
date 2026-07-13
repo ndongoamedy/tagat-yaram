@@ -109,12 +109,6 @@ function ProgramDayPage() {
                   Alternative : <span className="text-foreground">{ex.alternative}</span>
                 </p>
               )}
-              <div className="rounded-xl bg-surface-2/50 p-3">
-                <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-                  Muscles ciblés
-                </p>
-                <MuscleMap muscles={ex.muscles} />
-              </div>
             </div>
           </div>
         ))}
