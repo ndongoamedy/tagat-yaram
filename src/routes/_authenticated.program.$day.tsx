@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { ProgramData, ProgramDay } from "@/lib/programs.functions";
 import { Loader2, ArrowLeft, Play, RefreshCcw } from "lucide-react";
-import { MuscleMap } from "@/components/MuscleMap";
+
 import { ExerciseVideo } from "@/components/ExerciseVideo";
 
 export const Route = createFileRoute("/_authenticated/program/$day")({
@@ -109,12 +109,6 @@ function ProgramDayPage() {
                   Alternative : <span className="text-foreground">{ex.alternative}</span>
                 </p>
               )}
-              <div className="rounded-xl bg-surface-2/50 p-3">
-                <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-                  Muscles ciblés
-                </p>
-                <MuscleMap muscles={ex.muscles} />
-              </div>
             </div>
           </div>
         ))}
