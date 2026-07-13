@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { ProgramData, ProgramDay } from "@/lib/programs.functions";
 import { Loader2, ArrowLeft, Play, RefreshCcw } from "lucide-react";
-import { MuscleMap } from "@/components/MuscleMap";
+
 import { ExerciseVideo } from "@/components/ExerciseVideo";
 
 export const Route = createFileRoute("/_authenticated/program/$day")({
