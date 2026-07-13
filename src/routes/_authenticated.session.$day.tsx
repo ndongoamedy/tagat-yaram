@@ -397,14 +397,6 @@ function SessionPage() {
           </div>
           <p className="mb-4 text-sm leading-relaxed text-muted-foreground">{ex.description}</p>
 
-          <details className="mb-4 rounded-xl bg-surface-2/50 p-3">
-            <summary className="cursor-pointer text-xs font-semibold text-muted-foreground">
-              Voir les muscles ciblés
-            </summary>
-            <div className="mt-3">
-              <MuscleMap muscles={ex.muscles} />
-            </div>
-          </details>
 
           <div className="space-y-2">
             {exLog?.sets.map((s, setIdx) => (
