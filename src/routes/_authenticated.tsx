@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Dumbbell, Home, History, User, LogOut, Loader2 } from "lucide-react";
 import { FloatingChat } from "@/components/FloatingChat";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthLayout,
@@ -77,6 +78,7 @@ function AuthLayout() {
             <span className="hidden text-sm text-muted-foreground md:inline">
               {firstName && `Salut, ${firstName}`}
             </span>
+            <ThemeToggle />
             <Link
               to="/profile"
               aria-label="Mon profil"

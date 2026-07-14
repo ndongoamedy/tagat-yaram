@@ -53,44 +53,43 @@
 :root {
   --radius: 1rem;
 
-  /* Sahel athletic — dark canvas with ember brand */
-  --canvas: oklch(0.19 0.005 60);
-  --surface: oklch(0.24 0.006 60);
-  --surface-2: oklch(0.28 0.007 60);
+  /* Light mode — warm paper tones with ember brand */
+  --canvas: oklch(0.985 0.003 80);
+  --surface: oklch(0.965 0.004 80);
+  --surface-2: oklch(0.935 0.005 80);
 
-  --background: oklch(0.19 0.005 60);
-  --foreground: oklch(0.96 0.005 80);
+  --background: oklch(0.985 0.003 80);
+  --foreground: oklch(0.22 0.01 60);
 
-  --card: oklch(0.24 0.006 60);
-  --card-foreground: oklch(0.96 0.005 80);
-  --popover: oklch(0.24 0.006 60);
-  --popover-foreground: oklch(0.96 0.005 80);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.01 60);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.01 60);
 
-  /* Ember / laterite orange */
-  --brand: oklch(0.62 0.16 42);
-  --brand-foreground: oklch(0.98 0.005 80);
-  --brand-muted: oklch(0.62 0.16 42 / 0.15);
+  --brand: oklch(0.58 0.17 42);
+  --brand-foreground: oklch(0.99 0.005 80);
+  --brand-muted: oklch(0.58 0.17 42 / 0.12);
 
-  --primary: oklch(0.62 0.16 42);
-  --primary-foreground: oklch(0.98 0.005 80);
+  --primary: oklch(0.58 0.17 42);
+  --primary-foreground: oklch(0.99 0.005 80);
 
-  --secondary: oklch(0.30 0.006 60);
-  --secondary-foreground: oklch(0.96 0.005 80);
+  --secondary: oklch(0.92 0.006 60);
+  --secondary-foreground: oklch(0.22 0.01 60);
 
-  --muted: oklch(0.28 0.006 60);
-  --muted-foreground: oklch(0.68 0.01 60);
+  --muted: oklch(0.94 0.005 60);
+  --muted-foreground: oklch(0.48 0.01 60);
 
-  --accent: oklch(0.62 0.16 42 / 0.12);
-  --accent-foreground: oklch(0.62 0.16 42);
+  --accent: oklch(0.58 0.17 42 / 0.10);
+  --accent-foreground: oklch(0.58 0.17 42);
 
   --destructive: oklch(0.58 0.22 27);
-  --destructive-foreground: oklch(0.98 0.005 80);
+  --destructive-foreground: oklch(0.99 0.005 80);
 
-  --success: oklch(0.68 0.14 150);
+  --success: oklch(0.62 0.14 150);
 
-  --border: oklch(1 0 0 / 0.08);
-  --input: oklch(1 0 0 / 0.10);
-  --ring: oklch(0.62 0.16 42 / 0.6);
+  --border: oklch(0.22 0.01 60 / 0.10);
+  --input: oklch(0.22 0.01 60 / 0.12);
+  --ring: oklch(0.58 0.17 42 / 0.5);
 }
 
 .dark {
