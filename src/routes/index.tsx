@@ -164,9 +164,19 @@ function LandingPage() {
       </section>
 
       <footer className="border-t border-border/60 py-8">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 text-sm text-muted-foreground">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 text-sm text-muted-foreground sm:flex-row">
           <span>© {new Date().getFullYear()} TagatYaram</span>
-          <span>Fait à Dakar 🇸🇳</span>
+          <span>
+            Fait à Dakar 🇸🇳 · Conçu par{" "}
+            <a
+              href="https://andvisionagency.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 transition-colors hover:text-foreground"
+            >
+              And Vision Agency
+            </a>
+          </span>
         </div>
       </footer>
     </div>
