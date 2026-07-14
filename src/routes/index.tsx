@@ -34,10 +34,11 @@ function LandingPage() {
             </div>
             <span className="text-lg font-bold tracking-tight">TagatYaram</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <ThemeToggle />
             <Link
               to="/auth"
-              className="text-sm font-medium text-muted-foreground transition hover:text-foreground"
+              className="hidden text-sm font-medium text-muted-foreground transition hover:text-foreground sm:inline"
             >
               Connexion
             </Link>
