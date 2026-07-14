@@ -1,8 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import heroImage from "@/assets/hero-athlete.jpg";
+import strengthImage from "@/assets/landing-strength.jpg";
+import gripImage from "@/assets/landing-grip.jpg";
+import appImage from "@/assets/landing-app.jpg";
 import { Dumbbell, Sparkles, PlayCircle, ArrowRight, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
