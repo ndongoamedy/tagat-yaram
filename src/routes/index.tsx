@@ -123,25 +123,44 @@ function LandingPage() {
                 n: "01",
                 title: "Ton profil en 2 minutes",
                 desc: "Âge, taille, poids, objectif, jours dispo. On sait ce qu'il te faut.",
+                img: appImage,
+                alt: "Athlète consultant son programme sur l'application",
               },
               {
                 n: "02",
                 title: "L'IA construit ton programme",
                 desc: "Un plan de musculation complet, adapté à ton morphotype et ton niveau.",
+                img: strengthImage,
+                alt: "Athlète en squat lourd, moment d'effort",
               },
               {
                 n: "03",
                 title: "Tu suis, tu coches, tu progresses",
                 desc: "Une séance = une checklist. Poids, reps, terminé. C'est tout.",
+                img: gripImage,
+                alt: "Main serrant une barre de musculation",
               },
             ].map((s) => (
               <div
                 key={s.n}
-                className="rounded-2xl border border-border bg-surface p-6 transition hover:border-brand/40"
+                className="group overflow-hidden rounded-2xl border border-border bg-surface transition hover:border-brand/40"
               >
-                <span className="font-mono text-sm text-brand">{s.n}</span>
-                <h3 className="mt-3 text-lg font-semibold">{s.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
+                <div className="relative aspect-[4/3] w-full overflow-hidden">
+                  <img
+                    src={s.img}
+                    alt={s.alt}
+                    loading="lazy"
+                    width={1024}
+                    height={1024}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-surface/80 via-surface/10 to-transparent" />
+                </div>
+                <div className="p-6">
+                  <span className="font-mono text-sm text-brand">{s.n}</span>
+                  <h3 className="mt-2 text-lg font-semibold">{s.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -169,18 +188,18 @@ function LandingPage() {
       </section>
 
       <footer className="border-t border-border/60 py-8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 text-sm text-muted-foreground sm:flex-row">
-          <span>© {new Date().getFullYear()} TagatYaram</span>
+        <div className="mx-auto flex max-w-6xl items-center justify-center px-6 text-center text-sm text-muted-foreground">
           <span>
-            Fait à Dakar 🇸🇳 · Conçu par{" "}
+            © {new Date().getFullYear()} · Designed by{" "}
             <a
               href="https://andvisionagency.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline underline-offset-2 transition-colors hover:text-foreground"
+              className="font-semibold uppercase tracking-wide underline underline-offset-2 transition-colors hover:text-foreground"
             >
               And Vision Agency
             </a>
+            . All rights reserved.
           </span>
         </div>
       </footer>
