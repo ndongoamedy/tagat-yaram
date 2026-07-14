@@ -1,9 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import heroImage from "@/assets/hero-athlete.jpg";
-import strengthImage from "@/assets/landing-strength.jpg";
-import gripImage from "@/assets/landing-grip.jpg";
-import appImage from "@/assets/landing-app.jpg";
+import heroAsset from "@/assets/hero-athlete.jpg.asset.json";
+import strengthAsset from "@/assets/landing-strength.jpg.asset.json";
+import gripAsset from "@/assets/landing-grip.jpg.asset.json";
+import appAsset from "@/assets/landing-app.jpg.asset.json";
+
+const heroImage = heroAsset.url;
+const strengthImage = strengthAsset.url;
+const gripImage = gripAsset.url;
+const appImage = appAsset.url;
 import { Dumbbell, Sparkles, PlayCircle, ArrowRight, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
